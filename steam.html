@@ -44,7 +44,7 @@ summary{cursor:pointer;color:var(--accent);font-weight:600}
 .pill{display:inline-block;padding:1px 6px;border-radius:10px;background:#333;color:var(--fg);font-size:11px;margin-right:4px}
 .type-Purchase{background:#1e4a63}.type-In-Game{background:#0d5b7a}.type-Gift{background:#5a3670}.type-Market{background:#805a1d}.type-Refund{background:#7a2020;color:#fdd}
 .foot{color:var(--muted);font-size:11px;text-align:center;margin-top:24px;padding:12px 0}
-.tabs{display:flex;gap:8px;margin:20px 0 0;border-bottom:1px solid #333}.tab{background:none;border:0;color:var(--muted);padding:9px 10px;cursor:pointer;font:inherit;border-bottom:2px solid transparent}.tab.active{color:var(--accent);border-color:var(--accent)}.view{display:none}.view.active{display:block}.package-note{color:var(--muted);font-size:12px;margin:8px 0}
+.tabs{display:flex;gap:8px;margin:20px 0 0;border-bottom:1px solid #333}.tab{background:none;border:0;color:var(--muted);padding:9px 10px;cursor:pointer;font:inherit;border-bottom:2px solid transparent}.tab.active{color:var(--accent);border-color:var(--accent)}.view{display:none}.view.active{display:block}.package-note{color:var(--muted);font-size:12px;margin:8px 0}.insight-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px;margin-top:12px}.insight{background:var(--panel);border:1px solid #333;border-radius:8px;padding:12px}.insight h3{margin:0 0 6px;color:var(--accent);font-size:14px}.insight p{margin:0;color:var(--fg);font-size:13px}.insight small{display:block;margin-top:6px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -52,12 +52,17 @@ summary{cursor:pointer;color:var(--accent);font-weight:600}
 <h1>Steam 消费报告</h1>
 <div class="sub" id="meta"></div>
 
-<div class="tabs" role="tablist"><button class="tab active" data-view="games" role="tab" aria-selected="true">游戏购买</button><button class="tab" data-view="market" role="tab" aria-selected="false">市场交易</button><button class="tab" data-view="orders" role="tab" aria-selected="false">订单明细</button></div>
+<div class="tabs" role="tablist"><button class="tab active" data-view="games" role="tab" aria-selected="true">游戏购买</button><button class="tab" data-view="insights" role="tab" aria-selected="false">消费洞察</button><button class="tab" data-view="market" role="tab" aria-selected="false">市场交易</button><button class="tab" data-view="orders" role="tab" aria-selected="false">订单明细</button></div>
 <div id="view-games" class="view active">
 <h2>未退款游戏购买 <span id="packageCount" style="color:var(--muted);font-size:12px"></span></h2>
 <div class="package-note">默认按游戏汇总，只显示未退款后的游戏购买。单商品订单直接计入对应游戏；多商品订单只在已从 Steam Help 核验逐项实付后拆分：同一主游戏与其已验证 DLC / 原声 / 美术包合并；同一购物车里的不同游戏拆开。Steam 无法验证归属的商品保持独立，不猜测合并。</div>
 <div class="cards" id="cards"></div>
 <div class="tbl-wrap"><table id="packagesTbl"><thead><tr><th>#</th><th>游戏</th><th class="num">实付</th><th class="num">商品数</th><th>购买日期</th><th>包含商品</th></tr></thead><tbody></tbody></table></div>
+</div>
+<div class="view" id="view-insights">
+<h2>人民币游戏购买洞察</h2>
+<div class="package-note">只基于“游戏购买”页签中的未退款人民币记录；美元、市场交易和退款不与人民币游戏购买混算。</div>
+<div class="insight-grid" id="insightsGrid"></div>
 </div>
 <div class="view" id="view-market">
 <h2>市场交易 <span id="marketCount" style="color:var(--muted);font-size:12px"></span></h2>
@@ -146,6 +151,26 @@ document.querySelector('#packagesTbl tbody').innerHTML = packages.map((g,i)=>{
 }).join('') || '<tr><td colspan="6" style="color:var(--muted);text-align:center">暂无可显示的游戏购买</td></tr>';
 
 const marketTxns = D.market_transactions || [];
+const yuanGames = packages.filter(g => (g.currency||'¥') === '¥');
+const yuanTotal = yuanGames.reduce((s,g) => s + Number(g.total_paid_local||0), 0);
+const amounts = yuanGames.map(g => Number(g.total_paid_local||0)).sort((a,b)=>a-b);
+const median = amounts.length ? (amounts.length % 2 ? amounts[(amounts.length-1)/2] : (amounts[amounts.length/2-1] + amounts[amounts.length/2]) / 2) : 0;
+const byYear = {};
+yuanGames.forEach(g => { const year=(g.last_purchase||g.first_purchase||'').slice(0,4); if (year) byYear[year]=(byYear[year]||0)+Number(g.total_paid_local||0); });
+const peakYear = Object.entries(byYear).sort((a,b)=>b[1]-a[1])[0];
+const topTen = yuanGames.slice().sort((a,b)=>Number(b.total_paid_local)-Number(a.total_paid_local)).slice(0,10).reduce((s,g)=>s+Number(g.total_paid_local||0),0);
+const lowPrice = yuanGames.filter(g=>Number(g.total_paid_local||0)<20);
+const marketRatio = yuanTotal ? (Number(primary.market||0) / yuanTotal * 100) : 0;
+const insightCard = (title, body, foot='') => `<article class="insight"><h3>${esc(title)}</h3><p>${esc(body)}</p>${foot?`<small>${esc(foot)}</small>`:''}</article>`;
+const insightCards = yuanGames.length ? [
+  insightCard('消费高峰', peakYear ? `${peakYear[0]} 年是消费最高年份：${fmt(peakYear[1])}` : '暂无可用年份数据', `按游戏购买日期归类；共 ${yuanGames.length} 项人民币游戏购买`),
+  insightCard('价格结构', `单项中位数 ${fmt(median)}；${lowPrice.length} 项低于 ¥20`, `低价游戏合计 ${fmt(lowPrice.reduce((s,g)=>s+Number(g.total_paid_local||0),0))}`),
+  insightCard('重点投入', `前 10 项占人民币游戏购买的 ${(yuanTotal ? topTen/yuanTotal*100 : 0).toFixed(1)}%`, `合计 ${fmt(topTen)}；最高单项为 ${yuanGames.slice().sort((a,b)=>b.total_paid_local-a.total_paid_local)[0]?.name||'—'}`),
+  insightCard('市场交易独立观察', `${marketTxns.length} 笔市场交易，合计 ${fmt(primary.market||0)}`, `相当于人民币游戏购买的 ${marketRatio.toFixed(1)}%；未计入游戏购买消费`),
+  insightCard('退款已排除', `${D.refunds.length} 笔退款，合计 ${fmt(primary.refund||0)}`, '退款不计入“游戏购买”页签或本页洞察'),
+] : [insightCard('暂无人民币游戏购买数据', '目前没有可用于生成洞察的未退款人民币游戏购买记录。')];
+document.getElementById('insightsGrid').innerHTML = insightCards.join('');
+
 document.getElementById('marketCount').textContent = `(${marketTxns.length} 笔 · 合计 ${fmt(primary.market||0)})`;
 document.querySelector('#marketTbl tbody').innerHTML = marketTxns.map(t=>{
   const its = itemsByTxn[t.transaction_id] || [];
