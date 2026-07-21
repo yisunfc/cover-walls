@@ -44,7 +44,7 @@ summary{cursor:pointer;color:var(--accent);font-weight:600}
 .pill{display:inline-block;padding:1px 6px;border-radius:10px;background:#333;color:var(--fg);font-size:11px;margin-right:4px}
 .type-Purchase{background:#1e4a63}.type-In-Game{background:#0d5b7a}.type-Gift{background:#5a3670}.type-Market{background:#805a1d}.type-Refund{background:#7a2020;color:#fdd}
 .foot{color:var(--muted);font-size:11px;text-align:center;margin-top:24px;padding:12px 0}
-.tabs{display:flex;gap:8px;margin:20px 0 0;border-bottom:1px solid #333}.tab{background:none;border:0;color:var(--muted);padding:9px 10px;cursor:pointer;font:inherit;border-bottom:2px solid transparent}.tab.active{color:var(--accent);border-color:var(--accent)}.view{display:none}.view.active{display:block}.package-note{color:var(--muted);font-size:12px;margin:8px 0}.insight-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px;margin-top:12px}.insight{background:var(--panel);border:1px solid #333;border-radius:8px;padding:12px}.insight h3{margin:0 0 6px;color:var(--accent);font-size:14px}.insight p{margin:0;color:var(--fg);font-size:13px}.insight small{display:block;margin-top:6px;color:var(--muted)}
+.tabs{display:flex;gap:8px;margin:20px 0 0;border-bottom:1px solid #333}.tab{background:none;border:0;color:var(--muted);padding:9px 10px;cursor:pointer;font:inherit;border-bottom:2px solid transparent}.tab.active{color:var(--accent);border-color:var(--accent)}.view{display:none}.view.active{display:block}.package-note{color:var(--muted);font-size:12px;margin:8px 0}.insight-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px;margin-top:12px}.insight{background:var(--panel);border:1px solid #333;border-radius:8px;padding:12px}.insight h3{margin:0 0 6px;color:var(--accent);font-size:14px}.insight p{margin:0;color:var(--fg);font-size:13px}.insight small{display:block;margin-top:6px;color:var(--muted)}.insight-viz{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-top:14px}.viz-panel{background:var(--panel);border:1px solid #333;border-radius:8px;padding:14px;min-width:0}.viz-panel h3{margin:0 0 4px;font-size:14px;color:var(--fg)}.viz-panel p{margin:0 0 10px;color:var(--muted);font-size:12px}.viz-scroll{overflow-x:auto}.viz-scroll svg{display:block;min-width:300px;width:100%;height:auto}.price-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;color:var(--muted);font-size:11px}.price-legend span{display:flex;align-items:center;gap:4px}.price-legend i{width:8px;height:8px;border-radius:50%}
 </style>
 </head>
 <body>
@@ -63,6 +63,10 @@ summary{cursor:pointer;color:var(--accent);font-weight:600}
 <h2>消费故事</h2>
 <div class="package-note">用当前已导入的未退款人民币游戏购买记录生成。洞察描述可由未来接入的其他来源继续补充；不同币种、市场交易与退款不会与游戏购买混算。</div>
 <div class="insight-grid" id="insightsGrid"></div>
+<div class="insight-viz">
+  <section class="viz-panel"><h3>月度消费脉冲</h3><p>人民币游戏购买金额最高的 8 个月</p><div class="viz-scroll" id="insightTimeline"></div></section>
+  <section class="viz-panel"><h3>价格带分布</h3><p>按游戏条目数量，而不是按金额</p><div class="viz-scroll" id="priceMixChart"></div><div class="price-legend" id="priceMixLegend"></div></section>
+</div>
 </div>
 <div class="view" id="view-market">
 <h2>市场交易 <span id="marketCount" style="color:var(--muted);font-size:12px"></span></h2>
@@ -185,6 +189,36 @@ const insightCards = yuanGames.length ? [
   insightCard('两条独立资金线', `市场交易 ${marketTxns.length} 笔、${fmt(primary.market||0)}；退款 ${D.refunds.length} 笔、${fmt(primary.refund||0)}`, `市场相当于游戏购买的 ${marketRatio.toFixed(1)}%，两者都不计入本页游戏购买总额`),
 ] : [insightCard('暂无人民币游戏购买数据', '目前没有可用于生成故事的未退款人民币游戏购买记录。')];
 document.getElementById('insightsGrid').innerHTML = insightCards.join('');
+
+const byMonth = {};
+yuanGames.forEach(g => {
+  const month = (g.last_purchase || g.first_purchase || '').slice(0,7);
+  if (!month) return;
+  const slot = byMonth[month] ||= {count:0,total:0};
+  slot.count += 1; slot.total += Number(g.total_paid_local||0);
+});
+const pulseMonths = Object.entries(byMonth).sort((a,b)=>b[1].total-a[1].total).slice(0,8);
+if (pulseMonths.length) {
+  const W=480, row=31, H=25+pulseMonths.length*row, max=Math.max(...pulseMonths.map(x=>x[1].total));
+  const bars=pulseMonths.map(([month,v],i)=>{
+    const y=12+i*row, w=Math.max(2, v.total/max*275);
+    return `<text x="0" y="${y+13}" fill="#aaa" font-size="11">${month}</text><rect x="72" y="${y}" width="${w}" height="17" rx="3" fill="#66c0f4"><title>${month}：${fmt(v.total)} / ${v.count} 项</title></rect><text x="${78+w}" y="${y+13}" fill="#e0e0e0" font-size="11">${fmt(v.total)} · ${v.count} 项</text>`;
+  }).join('');
+  document.getElementById('insightTimeline').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="月度游戏消费脉冲图">${bars}</svg>`;
+} else document.getElementById('insightTimeline').textContent='暂无可绘制的人民币游戏购买记录';
+
+const priceBands = [
+  {label:'低于 ¥20', color:'#66c0f4', rows:yuanGames.filter(g=>Number(g.total_paid_local||0)<20)},
+  {label:'¥20–49.99', color:'#8bc34a', rows:yuanGames.filter(g=>Number(g.total_paid_local||0)>=20 && Number(g.total_paid_local||0)<50)},
+  {label:'¥50 及以上', color:'#ffb74d', rows:yuanGames.filter(g=>Number(g.total_paid_local||0)>=50)},
+];
+const priceN = priceBands.reduce((s,b)=>s+b.rows.length,0);
+if (priceN) {
+  let x=0;
+  const segments=priceBands.map(b=>{ const w=b.rows.length/priceN*420, part=`<rect x="${x}" y="12" width="${w}" height="34" fill="${b.color}"><title>${b.label}：${b.rows.length} 项</title></rect>`; x+=w; return part; }).join('');
+  document.getElementById('priceMixChart').innerHTML=`<svg viewBox="0 0 420 58" role="img" aria-label="游戏价格带分布图">${segments}</svg>`;
+  document.getElementById('priceMixLegend').innerHTML=priceBands.map(b=>`<span><i style="background:${b.color}"></i>${b.label} ${b.rows.length} 项 · ${(b.rows.length/priceN*100).toFixed(1)}%</span>`).join('');
+} else document.getElementById('priceMixChart').textContent='暂无可绘制的人民币游戏购买记录';
 
 document.getElementById('marketCount').textContent = `(${marketTxns.length} 笔 · 合计 ${fmt(primary.market||0)})`;
 document.querySelector('#marketTbl tbody').innerHTML = marketTxns.map(t=>{
