@@ -5,20 +5,33 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>今天玩什么</title>
 <style>
-:root { color-scheme: dark; --bg:#090b12; --card:#141824; --muted:#9aa4b2; --text:#f5f7fb; --accent:#77d3ff; --good:#8bffb0; --bad:#ff9b9b; }
-* { box-sizing: border-box; } body { margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:radial-gradient(circle at top,#1c2440,#090b12 55%); color:var(--text); }
-main { max-width:1100px; margin:0 auto; padding:28px 18px 40px; }
-.hero { display:flex; gap:16px; align-items:center; justify-content:space-between; flex-wrap:wrap; margin-bottom:22px; }
-h1 { margin:0; font-size:clamp(30px,7vw,64px); letter-spacing:-.04em; }
-.subtitle { color:var(--muted); margin-top:8px; line-height:1.55; }
-button { border:0; border-radius:999px; padding:13px 20px; font-weight:700; color:#071018; background:linear-gradient(135deg,#77d3ff,#8bffb0); box-shadow:0 10px 30px #0008; cursor:pointer; }
-.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
-.card { overflow:hidden; border:1px solid #ffffff18; background:linear-gradient(180deg,#1b2030,#10131d); border-radius:22px; box-shadow:0 18px 50px #0007; }
-.cover { width:100%; aspect-ratio:16/9; object-fit:cover; background:#202638; display:block; }
-.body { padding:16px; }
-h2 { margin:0 0 10px; font-size:21px; line-height:1.15; }
-.intro { color:#d9e2ef; font-size:14px; line-height:1.6; margin:0; }
-a { color:var(--text); text-decoration:none; } a:hover { color:var(--accent); }
+:root {
+  color-scheme: light dark;
+  --paper:#f3f4ef; --ink:#17251d; --muted:#657169; --line:#cfd5cf;
+  --accent:#315c45; --surface:#f9faf6; --focus:#d7e6d5;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --paper:#152019; --ink:#eef3ec; --muted:#aeb9b0; --line:#3b4a3e; --accent:#a8d1ad; --surface:#1c2a20; --focus:#304b37; }
+}
+* { box-sizing:border-box; }
+body { margin:0; background:var(--paper); color:var(--ink); font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+main { max-width:1180px; margin:0 auto; padding:clamp(28px,6vw,76px) clamp(18px,4vw,48px) 64px; }
+.hero { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; padding-bottom:28px; border-bottom:1px solid var(--line); margin-bottom:28px; }
+h1 { margin:0; font-size:clamp(36px,6vw,70px); line-height:.98; letter-spacing:-.065em; font-weight:750; }
+.subtitle { margin-top:12px; color:var(--muted); font-size:16px; line-height:1.5; }
+button { border:1px solid var(--accent); border-radius:999px; padding:11px 17px; color:var(--paper); background:var(--accent); font:inherit; font-weight:700; cursor:pointer; white-space:nowrap; transition:transform .16s ease, background .16s ease; }
+button:hover { transform:translateY(-1px); } button:active { transform:translateY(1px) scale(.98); } button:focus-visible,a:focus-visible { outline:3px solid var(--focus); outline-offset:3px; }
+.grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px 28px; }
+.card { display:grid; grid-template-columns:132px minmax(0,1fr); gap:16px; align-items:start; min-width:0; padding:0 0 22px; border-bottom:1px solid var(--line); }
+.card:first-child { grid-column:1/-1; grid-template-columns:minmax(280px,1.25fr) minmax(0,1fr); gap:28px; padding-bottom:28px; }
+.cover { width:100%; aspect-ratio:16/9; object-fit:cover; background:var(--surface); display:block; border-radius:10px; }
+.body { padding-top:2px; }
+h2 { margin:0 0 10px; font-size:clamp(19px,2vw,27px); letter-spacing:-.035em; line-height:1.05; }
+.card:first-child h2 { font-size:clamp(27px,3.2vw,43px); }
+.intro { max-width:45ch; margin:0; color:var(--muted); font-size:15px; line-height:1.65; }
+a { color:var(--ink); text-decoration:none; } a:hover { color:var(--accent); text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px; }
+@media (max-width:700px) { main { padding-bottom:40px; } .hero { align-items:flex-start; flex-direction:column; } .grid { grid-template-columns:1fr; gap:20px; } .card,.card:first-child { grid-column:auto; grid-template-columns:112px minmax(0,1fr); gap:14px; padding-bottom:20px; } .card:first-child h2 { font-size:24px; } .intro { font-size:14px; } }
+@media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior:auto!important; transition:none!important; } }
 </style>
 </head>
 <body>
