@@ -8,13 +8,13 @@
 :root {
   color-scheme: light dark;
   --paper:#f3f4ef; --ink:#17251d; --muted:#657169; --line:#cfd5cf;
-  --accent:#315c45; --surface:#f9faf6; --focus:#d7e6d5;
+  --accent:#315c45; --surface:#f9faf6; --focus:#d7e6d5; --backdrop:linear-gradient(145deg,#eff4ee 0%,#f3f4ef 42%,#eef1f7 100%);
 }
 @media (prefers-color-scheme: dark) {
-  :root { --paper:#152019; --ink:#eef3ec; --muted:#aeb9b0; --line:#3b4a3e; --accent:#a8d1ad; --surface:#1c2a20; --focus:#304b37; }
+  :root { --paper:#152019; --ink:#eef3ec; --muted:#aeb9b0; --line:#3b4a3e; --accent:#a8d1ad; --surface:#1c2a20; --focus:#304b37; --backdrop:linear-gradient(145deg,#13231a 0%,#152019 42%,#17202d 100%); }
 }
 * { box-sizing:border-box; }
-body { margin:0; background:var(--paper); color:var(--ink); font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+body { margin:0; background:var(--backdrop); color:var(--ink); font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
 main { max-width:1180px; margin:0 auto; padding:clamp(28px,6vw,76px) clamp(18px,4vw,48px) 64px; }
 .hero { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; padding-bottom:28px; border-bottom:1px solid var(--line); margin-bottom:28px; }
 h1 { margin:0; font-size:clamp(36px,6vw,70px); line-height:.98; letter-spacing:-.065em; font-weight:750; }
@@ -22,14 +22,18 @@ h1 { margin:0; font-size:clamp(36px,6vw,70px); line-height:.98; letter-spacing:-
 button { border:1px solid var(--accent); border-radius:999px; padding:11px 17px; color:var(--paper); background:var(--accent); font:inherit; font-weight:700; cursor:pointer; white-space:nowrap; transition:transform .16s ease, background .16s ease; }
 button:hover { transform:translateY(-1px); } button:active { transform:translateY(1px) scale(.98); } button:focus-visible,a:focus-visible { outline:3px solid var(--focus); outline-offset:3px; }
 .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px 28px; }
-.card { display:grid; grid-template-columns:132px minmax(0,1fr); gap:16px; align-items:start; min-width:0; padding:0 0 22px; border-bottom:1px solid var(--line); }
-.card:first-child { grid-column:1/-1; grid-template-columns:minmax(280px,1.25fr) minmax(0,1fr); gap:28px; padding-bottom:28px; }
-.cover { width:100%; aspect-ratio:16/9; object-fit:cover; background:var(--surface); display:block; border-radius:10px; }
+.card { display:grid; grid-template-columns:132px minmax(0,1fr); gap:16px; align-items:start; min-width:0; padding:12px; border:1px solid var(--tone-line); border-radius:16px; background:var(--tone); animation:card-in .42s cubic-bezier(.16,1,.3,1) both; animation-delay:calc(var(--i) * 70ms); }
+.card:first-child { grid-column:1/-1; grid-template-columns:minmax(280px,1.25fr) minmax(0,1fr); gap:28px; padding:16px; }
+.media { overflow:hidden; border-radius:10px; background:var(--surface); }
+.cover { width:100%; aspect-ratio:16/9; object-fit:cover; background:var(--surface); display:block; border-radius:10px; transition:transform .35s cubic-bezier(.16,1,.3,1); }
+.card:hover .cover { transform:scale(1.035); }
+@keyframes card-in { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
 .body { padding-top:2px; }
 h2 { margin:0 0 10px; font-size:clamp(19px,2vw,27px); letter-spacing:-.035em; line-height:1.05; }
 .card:first-child h2 { font-size:clamp(27px,3.2vw,43px); }
 .intro { max-width:45ch; margin:0; color:var(--muted); font-size:15px; line-height:1.65; }
 a { color:var(--ink); text-decoration:none; } a:hover { color:var(--accent); text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px; }
+@media (prefers-color-scheme: dark) { .card { background:color-mix(in srgb,var(--tone) 22%,var(--surface))!important; border-color:color-mix(in srgb,var(--tone-line) 45%,var(--line))!important; } }
 @media (max-width:700px) { main { padding-bottom:40px; } .hero { align-items:flex-start; flex-direction:column; } .grid { grid-template-columns:1fr; gap:20px; } .card,.card:first-child { grid-column:auto; grid-template-columns:112px minmax(0,1fr); gap:14px; padding-bottom:20px; } .card:first-child h2 { font-size:24px; } .intro { font-size:14px; } }
 @media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior:auto!important; transition:none!important; } }
 </style>
@@ -68,11 +72,19 @@ function intro(g) {
   if (tags.length) return `这是一款${esc(type)}游戏，包含${tags.map(esc).join('、')}等特点。`;
   return `这是一款${esc(type)}游戏。`;
 }
+const TONES = [
+  ['#e5efe7','#b8d0bd'], ['#e7edf8','#bdc9e2'], ['#f6e9df','#e4bfa8'], ['#f4efd8','#ddd09a'], ['#eee5f3','#d4bddf']
+];
+function toneFor(name) {
+  let hash = 0;
+  for (const char of String(name)) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
+  return TONES[hash % TONES.length];
+}
 function render() {
   const cards = weightedDraw(DATA, COUNT);
   document.getElementById('cards').innerHTML = cards.map((g,i) => `
-    <article class="card">
-      ${g.coverUrl ? `<img class="cover" src="${esc(g.coverUrl)}" alt="">` : `<div class="cover"></div>`}
+    <article class="card" style="--tone:${toneFor(g.name)[0]};--tone-line:${toneFor(g.name)[1]};--i:${i}">
+      <div class="media">${g.coverUrl ? `<img class="cover" src="${esc(g.coverUrl)}" alt="">` : `<div class="cover"></div>`}</div>
       <div class="body">
         <h2>${g.storeUrl ? `<a href="${esc(g.storeUrl)}" target="_blank" rel="noopener">${esc(g.name)}</a>` : esc(g.name)}</h2>
         <p class="intro">${intro(g)}</p>
