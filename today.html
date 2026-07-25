@@ -46,11 +46,11 @@ button:focus-visible,a:focus-visible { outline:3px solid color-mix(in srgb,var(-
 .game-title a { color:inherit; text-decoration:none; }
 .game-title a:hover { color:var(--accent); }
 .intro { max-width:54ch; margin:12px 0 0; color:var(--muted); font-size:15px; line-height:1.68; }
-.supporting-card .intro { display:-webkit-box; overflow:hidden; -webkit-box-orient:vertical; -webkit-line-clamp:3; margin-top:9px; font-size:14px; line-height:1.58; }
+.supporting-card .intro { margin-top:9px; font-size:14px; line-height:1.58; }
 .open-link { display:inline-flex; margin-top:16px; color:var(--accent); font-size:13px; font-weight:800; text-decoration:none; }
 .open-link:hover { text-decoration:underline; text-underline-offset:4px; }
 @keyframes card-in { from { opacity:0; transform:translateY(15px); } to { opacity:1; transform:translateY(0); } }
-@media (max-width:760px) { main { padding-bottom:42px; } .hero { grid-template-columns:1fr; align-items:start; } h1 { max-width:none; font-size:clamp(42px,13vw,62px); } .collection-heading { margin-top:25px; } .collection-heading p { display:none; } .collection-grid { grid-template-columns:1fr; gap:16px; } .featured-card { grid-row:auto; padding:10px; } .featured-card .art { height:auto; aspect-ratio:16/10; } .featured-card .card-body { padding:16px 6px 7px; } .supporting-card { grid-template-columns:116px minmax(0,1fr); gap:12px; padding:9px; } .supporting-card .art { aspect-ratio:1/1; } .supporting-card .game-title { font-size:20px; } .supporting-card .intro { -webkit-line-clamp:2; } .open-link { margin-top:11px; } }
+@media (max-width:760px) { main { padding-bottom:42px; } .hero { grid-template-columns:1fr; align-items:start; } h1 { max-width:none; font-size:clamp(42px,13vw,62px); } .collection-heading { margin-top:25px; } .collection-heading p { display:none; } .collection-grid { grid-template-columns:1fr; gap:16px; } .featured-card { grid-row:auto; padding:10px; } .featured-card .art { height:auto; aspect-ratio:16/10; } .featured-card .card-body { padding:16px 6px 7px; } .supporting-card { grid-template-columns:116px minmax(0,1fr); gap:12px; padding:9px; } .supporting-card .art { aspect-ratio:1/1; } .supporting-card .game-title { font-size:20px; } .open-link { margin-top:11px; } }
 @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
 </style>
 </head>
