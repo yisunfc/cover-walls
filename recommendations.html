@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#e8f0e7">
+<title>游戏推荐</title>
+<style>
+:root { color-scheme: light dark; }
+* { box-sizing:border-box; }
+body { min-width:320px; margin:0; color:#173126; background:#f4f7f2; font-family:ui-rounded,"SF Pro Rounded","Noto Sans SC","Segoe UI",system-ui,sans-serif; }
+@media (prefers-color-scheme: dark) { body { color:#edf7ee; background:#102218; } }
+main.page { width:min(1180px,100%); margin:0 auto; padding:clamp(28px,5vw,60px) clamp(18px,5vw,52px) 64px; }
+.page-eyebrow { margin:0 0 10px; color:#246b48; font-size:12px; font-weight:800; letter-spacing:.11em; }
+@media (prefers-color-scheme: dark) { .page-eyebrow { color:#91d0a6; } }
+.page-title { margin:0 0 8px; font-size:clamp(34px,6vw,60px); line-height:1; letter-spacing:-.055em; font-weight:780; }
+.page-lede { max-width:44ch; margin:0 0 clamp(28px,5vw,48px); color:#5c7165; font-size:16px; line-height:1.6; }
+@media (prefers-color-scheme: dark) { .page-lede { color:#b1c5b6; } }
+</style>
+</head>
+<body>
+<main class="page">
+  <header>
+    <p class="page-eyebrow">个人游戏库</p>
+    <h1 class="page-title">游戏推荐</h1>
+    <p class="page-lede">从你自己的游戏库里，帮你决定接下来玩什么。</p>
+  </header>
+  <section id="today-play" aria-labelledby="today-play-title">
+<style>
+#today-play {
+  --tp-muted:#5c7165; --tp-line:#cfdbd2; --tp-accent:#246b48; --tp-accent-ink:#f5fbf5;
+  --tp-surface:#fbfdf9; --tp-shadow:rgba(25,56,41,.12);
+  margin:0; color:inherit;
+}
+@media (prefers-color-scheme: dark) {
+  #today-play { --tp-muted:#b1c5b6; --tp-line:#355242; --tp-accent:#91d0a6; --tp-accent-ink:#102218; --tp-surface:#172e21; --tp-shadow:rgba(0,0,0,.28); }
+}
+#today-play * { box-sizing:border-box; }
+#today-play .tp-head { display:flex; justify-content:space-between; align-items:baseline; gap:20px; flex-wrap:wrap; margin:0 0 6px; }
+#today-play .tp-eyebrow { margin:0 0 8px; color:var(--tp-accent); font-size:12px; font-weight:800; letter-spacing:.11em; }
+#today-play .tp-title { margin:0; font-size:clamp(24px,3.6vw,34px); line-height:1.08; letter-spacing:-.03em; font-weight:760; }
+#today-play .tp-subtitle { margin:8px 0 0; color:var(--tp-muted); font-size:15px; line-height:1.6; }
+#today-play .tp-reroll { min-height:46px; border:1px solid var(--tp-accent); border-radius:999px; padding:12px 19px; color:var(--tp-accent-ink); background:var(--tp-accent); font:inherit; font-weight:800; cursor:pointer; white-space:nowrap; transition:transform .18s cubic-bezier(.16,1,.3,1),box-shadow .18s ease; }
+#today-play .tp-reroll:hover { transform:translateY(-2px); box-shadow:0 12px 24px var(--tp-shadow); }
+#today-play .tp-reroll:active { transform:translateY(0) scale(.98); }
+#today-play .tp-reroll:focus-visible,#today-play .tp-card a:focus-visible { outline:3px solid color-mix(in srgb,var(--tp-accent) 45%,transparent); outline-offset:4px; }
+#today-play .tp-grid { display:grid; grid-template-columns:minmax(0,1.28fr) minmax(280px,.72fr); gap:22px; align-items:stretch; margin-top:18px; }
+#today-play .tp-card { position:relative; overflow:hidden; border:1px solid var(--tp-line); border-radius:18px; background:var(--tp-surface); box-shadow:0 15px 35px -28px var(--tp-shadow); animation:tp-card-in .48s cubic-bezier(.16,1,.3,1) both; animation-delay:calc(var(--tp-i) * 80ms); }
+#today-play .tp-featured { grid-row:span 2; padding:15px; }
+#today-play .tp-supporting { display:grid; grid-template-columns:160px minmax(0,1fr); gap:16px; padding:12px; align-items:center; }
+#today-play .tp-art { display:block; overflow:hidden; border-radius:12px; background:var(--tp-surface); }
+#today-play .tp-featured .tp-art { height:clamp(240px,34vw,380px); }
+#today-play .tp-supporting .tp-art { aspect-ratio:1.2/1; }
+#today-play .tp-cover { display:block; width:100%; height:100%; object-fit:cover; background:var(--tp-surface); transition:transform .5s cubic-bezier(.16,1,.3,1),filter .5s ease; }
+#today-play .tp-card:hover .tp-cover { transform:scale(1.045); filter:saturate(1.08); }
+#today-play .tp-body { min-width:0; }
+#today-play .tp-featured .tp-body { padding:18px 8px 5px; }
+#today-play .tp-supporting .tp-body { padding:2px 5px 2px 0; }
+#today-play .tp-name { margin:0; font-size:clamp(21px,2.6vw,34px); line-height:1.06; letter-spacing:-.04em; }
+#today-play .tp-supporting .tp-name { font-size:clamp(18px,2vw,24px); }
+#today-play .tp-name a { color:inherit; text-decoration:none; }
+#today-play .tp-name a:hover { color:var(--tp-accent); }
+#today-play .tp-intro { max-width:54ch; margin:12px 0 0; color:var(--tp-muted); font-size:15px; line-height:1.68; }
+#today-play .tp-supporting .tp-intro { margin-top:9px; font-size:14px; line-height:1.58; }
+#today-play .tp-open { display:inline-flex; margin-top:16px; color:var(--tp-accent); font-size:13px; font-weight:800; text-decoration:none; }
+#today-play .tp-open:hover { text-decoration:underline; text-underline-offset:4px; }
+#today-play .tp-empty { margin:18px 0 0; color:var(--tp-muted); font-size:15px; }
+@keyframes tp-card-in { from { opacity:0; transform:translateY(15px); } to { opacity:1; transform:translateY(0); } }
+@media (max-width:760px) {
+  #today-play .tp-grid { grid-template-columns:1fr; gap:16px; }
+  #today-play .tp-featured { grid-row:auto; padding:10px; }
+  #today-play .tp-featured .tp-art { height:auto; aspect-ratio:16/10; }
+  #today-play .tp-featured .tp-body { padding:16px 6px 7px; }
+  #today-play .tp-supporting { grid-template-columns:116px minmax(0,1fr); gap:12px; padding:9px; }
+  #today-play .tp-supporting .tp-art { aspect-ratio:1/1; }
+  #today-play .tp-supporting .tp-name { font-size:20px; }
+  #today-play .tp-open { margin-top:11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #today-play .tp-card,#today-play .tp-cover,#today-play .tp-reroll { animation:none!important; transition:none!important; }
+}
+</style>
+<div class="tp-head">
+  <div>
+    <p class="tp-eyebrow">为今晚挑三款</p>
+    <h2 id="today-play-title" class="tp-title">今天玩什么</h2>
+    <p class="tp-subtitle">不用研究太久，挑一款开始。</p>
+  </div>
+  <button id="today-play-reroll" class="tp-reroll" data-role="refresh" type="button">换一批</button>
+</div>
+<div id="today-play-cards" class="tp-grid" aria-live="polite" aria-busy="false"></div>
+<p id="today-play-status" class="tp-empty" role="status" aria-live="polite" hidden></p>
+<noscript><p class="tp-empty">开启 JavaScript 以查看今天的游戏推荐。</p></noscript>
+<script id="today-play-data" type="application/json">[{"key": "steam:1222140", "name": "Detroit: Become Human", "coverUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1222140/header.jpg", "storeUrl": "https://store.steampowered.com/app/1222140/", "description": "在《底特律：化身为人》中，人类和机器人的命运都将掌握在您的手中，您将走进一个不远的未来，一个机器人具有比人类更高智慧的时代。您将体验到史上最为复杂的分支故事--您所作出的每个选择都将影响游戏的结局。", "series": [], "score": 0.6677}, {"key": "steam:1225580", "name": "Fe", "coverUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1225580/header.jpg", "storeUrl": "https://store.steampowered.com/app/1225580/", "description": "在一座幽暗的北欧风格森林中四处奔跑、攀爬乃至滑翔，探索那里生机盎然、藏满各种秘密和神奇生物的生态系统。 化身为“Fe”，探索一片令您流连忘返的新天地。", "series": [], "score": 0.6183}, {"key": "steam:1328670", "name": "Mass Effect™ Legendary Edition", "coverUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1328670/header.jpg", "storeUrl": "https://store.steampowered.com/app/1328670/", "description": "《质量效应》传奇版将包含单人基础内容及广受赞誉的《质量效应》《质量效应 2》及《质量效应 3》三部曲系列超过 40 款 DLC，更有多种促销武器、装甲，及各种组合包等你来拿--所有内容，全部重置优化新升级，4K Ultra HD，等你体验。", "series": ["mass effect"], "score": 0.7351}, {"key": "steam:1462570", "name": "Lost in Random™", "coverUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1462570/header.jpg", "storeUrl": "https://store.steampowered.com/app/1462570/", "description": "在《Lost in Random™》中让幸运女神垂青于你，这是一款哥特童话风格的动作冒险游戏，这个王国中每个公民的命运都由掷骰决定。", "series": ["lost in random"], "score": 0.6409}, {"key": "steam:1091500", "name": "Cyberpunk 2077", "coverUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1091500/header.jpg", "storeUrl": "https://store.steampowered.com/app/1091500/", "description": "《赛博朋克 2077》是一款开放世界动作冒险 RPG 游戏。故事发生在暗黑未来的夜之城，一座五光十色、危机四伏的超级大都会，权力更迭和无尽的身体改造是这里不变的主题。", "series": ["cyberpunk"], "score": 0.6734}, {"key": "steam:1286680", "name": "Tiny Tina's Wonderlands", "coverUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1286680/header.jpg", "storeUrl": "https://store.steampowered.com/app/1286680/", "description": "快来参加这场充满奇思妙想、神奇景观和高能武器的史诗冒险！摇出你专属的多职业英雄，战斗、寻宝，踏上阻止暴虐boss天龙魔君的征途。", "series": ["borderlands"], "score": 0.6139}, {"key": "steam:1222690", "name": "Dragon Age™ Inquisition", "coverUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1222690/header.jpg", "storeUrl": "https://store.steampowered.com/app/1222690/", "description": "为拯救 Thedas 而战。此时此刻，每个选择都至关重要。创建您的英雄，选择他们的技能，组建一支队伍，铲除世间邪恶。", "series": ["dragon age"], "score": 0.6479}, {"key": "steam:1174180", "name": "Red Dead Redemption 2", "coverUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1174180/header.jpg", "storeUrl": "https://store.steampowered.com/app/1174180/", "description": "亚瑟·摩根和范德林德帮众是一群逃亡在外的亡命之徒。联邦侦探和赏金猎人在他们的身后穷追不舍，亚瑟一行人必须在广袤蛮荒的腹地上四处劫掠、挣扎求生。", "series": ["red dead", "red dead redemption"], "score": 0.7629}, {"key": "steam:1426210", "name": "It Takes Two", "coverUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1426210/header.jpg", "storeUrl": "https://store.steampowered.com/app/1426210/", "description": "游玩《双人成行》，踏上生命中最疯狂的旅程。利用好友通行证*邀请一位好友免费游玩，共同体验多种多样的乐趣，享受颠覆性的玩法挑战。", "series": [], "score": 0.7385}, {"key": "steam:1147550", "name": "Not For Broadcast", "coverUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1147550/header.jpg", "storeUrl": "https://store.steampowered.com/app/1147550/", "description": "今天是选举之夜！一个新政党以压倒性优势获胜，但《全国晚间新闻》的编辑却逃之夭夭，所以由你这位看门人来控制广播室。你会支持新政府走向反乌托邦吗？还是会不惜一切代价阻止他们？", "series": [], "score": 0.6531}, {"key": "steam:1467920", "name": "A Guidebook Of Babel", "coverUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1467920/header.jpg", "storeUrl": "https://store.steampowered.com/app/1467920/", "description": "一款以蝴蝶效应为核心的剧情冒险游戏。你将登上名为巴别号的奇幻巨轮，经历一段光怪陆离的转世之旅……旅人的心愿与遗憾在此交织，而你，准备好拿起钢笔，去改写他们经历的一切了吗？", "series": [], "score": 0.6535}]</script>
+<script>
+(function() {
+  const DATA = JSON.parse(document.getElementById('today-play-data').textContent);
+  const COUNT = 3;
+  const cardsEl = document.getElementById('today-play-cards');
+  const statusEl = document.getElementById('today-play-status');
+  const rerollEl = document.getElementById('today-play-reroll');
+  function seriesKeys(g) { return (g.series || []).map(s => String(s)).filter(Boolean); }
+  function weightedDraw(pool, n) {
+    if (!pool.length || n <= 0) return [];
+    const best = pool.reduce((m, x) => Math.max(m, x.score), -Infinity);
+    let items = pool.slice(); const picked = []; const seen = new Set();
+    while (items.length && picked.length < n) {
+      const weights = items.map(x => Math.pow(x.score - (best - 0.15) + 0.02, 2));
+      let r = Math.random() * weights.reduce((a, b) => a + b, 0); let idx = 0;
+      for (; idx < weights.length; idx++) { r -= weights[idx]; if (r <= 0) break; }
+      const g = items[Math.min(idx, items.length - 1)]; picked.push(g);
+      seriesKeys(g).forEach(k => seen.add(k));
+      items = items.filter(x => x !== g && !seriesKeys(x).some(k => seen.has(k)));
+    }
+    return picked;
+  }
+  function esc(value) { return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function render() {
+    const cards = weightedDraw(DATA, COUNT);
+    if (!cards.length) {
+      cardsEl.innerHTML = '';
+      statusEl.hidden = false;
+      statusEl.textContent = '暂时没有可推荐的游戏。';
+      return;
+    }
+    cardsEl.innerHTML = cards.map((g, i) => {
+      const layout = i === 0 ? 'tp-featured' : 'tp-supporting';
+      const title = g.storeUrl ? `<a href="${esc(g.storeUrl)}" target="_blank" rel="noopener">${esc(g.name)}</a>` : esc(g.name);
+      const cover = g.coverUrl ? `<img class="tp-cover" src="${esc(g.coverUrl)}" alt="${esc(g.name)} 的封面">` : `<div class="tp-cover" aria-hidden="true"></div>`;
+      const intro = g.description ? `<p class="tp-intro">${esc(g.description)}</p>` : '';
+      const open = g.storeUrl ? `<a class="tp-open" href="${esc(g.storeUrl)}" target="_blank" rel="noopener">在 Steam 查看</a>` : '';
+      return `<article class="tp-card ${layout}" style="--tp-i:${i}">
+        <div class="tp-art">${cover}</div>
+        <div class="tp-body"><h3 class="tp-name">${title}</h3>${intro}${open}</div>
+      </article>`;
+    }).join('');
+    statusEl.hidden = false;
+    statusEl.textContent = `已为你换了一批（${cards.length} 款）。`;
+  }
+  if (rerollEl) rerollEl.addEventListener('click', function() { render(); rerollEl.focus(); });
+  render();
+})();
+</script>
+</section>
+</main>
+</body>
+</html>
