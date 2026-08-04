@@ -25,6 +25,41 @@ main.page { width:min(1180px,100%); margin:0 auto; padding:clamp(28px,5vw,60px) 
     <h1 class="page-title">游戏推荐</h1>
     <p class="page-lede">从你自己的游戏库里，帮你决定接下来玩什么。</p>
   </header>
+  <section id="recommendation-ranking" aria-labelledby="recommendation-ranking-title">
+<style>
+#recommendation-ranking {
+  --rr-muted:#5c7165; --rr-line:#cfdbd2; --rr-accent:#246b48; --rr-surface:#fbfdf9; --rr-shadow:rgba(25,56,41,.12);
+  margin:0 0 clamp(30px,5vw,48px); color:inherit;
+}
+@media (prefers-color-scheme: dark) {
+  #recommendation-ranking { --rr-muted:#b1c5b6; --rr-line:#355242; --rr-accent:#91d0a6; --rr-surface:#172e21; --rr-shadow:rgba(0,0,0,.28); }
+}
+#recommendation-ranking * { box-sizing:border-box; }
+#recommendation-ranking .rr-title { margin:0 0 16px; font-size:clamp(24px,3.6vw,34px); line-height:1.08; letter-spacing:-.03em; font-weight:760; }
+#recommendation-ranking .rr-list { list-style:decimal inside; margin:0; padding:0; display:grid; gap:14px; }
+#recommendation-ranking .rr-item { display:grid; grid-template-columns:132px minmax(0,1fr); gap:16px; align-items:center; min-width:0; padding:12px; border:1px solid var(--rr-line); border-radius:16px; background:var(--rr-surface); box-shadow:0 15px 35px -28px var(--rr-shadow); }
+#recommendation-ranking .rr-item::marker { color:var(--rr-accent); font-weight:800; }
+#recommendation-ranking .rr-art { display:block; overflow:hidden; border-radius:12px; background:var(--rr-surface); aspect-ratio:1.2/1; }
+#recommendation-ranking .rr-cover { display:block; width:100%; height:100%; object-fit:cover; background:var(--rr-surface); transition:transform .5s cubic-bezier(.16,1,.3,1); }
+#recommendation-ranking .rr-cover-empty { min-height:88px; }
+#recommendation-ranking .rr-art:hover .rr-cover { transform:scale(1.045); }
+#recommendation-ranking .rr-body { min-width:0; }
+#recommendation-ranking .rr-name { margin:0; font-size:clamp(18px,2.2vw,26px); line-height:1.08; letter-spacing:-.03em; overflow-wrap:anywhere; }
+#recommendation-ranking .rr-name a { color:inherit; text-decoration:none; }
+#recommendation-ranking .rr-name a:hover { color:var(--rr-accent); }
+#recommendation-ranking .rr-art:focus-visible,#recommendation-ranking .rr-name a:focus-visible { outline:3px solid color-mix(in srgb,var(--rr-accent) 45%,transparent); outline-offset:4px; }
+#recommendation-ranking .rr-desc { max-width:60ch; margin:8px 0 0; color:var(--rr-muted); font-size:14px; line-height:1.6; overflow-wrap:anywhere; }
+#recommendation-ranking .rr-empty { margin:0; color:var(--rr-muted); font-size:15px; }
+@media (max-width:760px) {
+  #recommendation-ranking .rr-item { grid-template-columns:96px minmax(0,1fr); gap:12px; padding:9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #recommendation-ranking .rr-cover { transition:none!important; }
+}
+</style>
+<h2 id="recommendation-ranking-title" class="rr-title">推荐排行</h2>
+<ol id="recommendation-ranking-list" class="rr-list"><li class="rr-item"><a class="rr-art" href="https://store.steampowered.com/app/1174180/" target="_blank" rel="noopener"><img class="rr-cover" src="https://cdn.cloudflare.steamstatic.com/steam/apps/1174180/header.jpg" alt="Red Dead Redemption 2 的封面" loading="lazy"></a><div class="rr-body"><h3 class="rr-name"><a href="https://store.steampowered.com/app/1174180/" target="_blank" rel="noopener">Red Dead Redemption 2</a></h3><p class="rr-desc">亚瑟·摩根和范德林德帮众是一群逃亡在外的亡命之徒。联邦侦探和赏金猎人在他们的身后穷追不舍，亚瑟一行人必须在广袤蛮荒的腹地上四处劫掠、挣扎求生。</p></div></li><li class="rr-item"><a class="rr-art" href="https://store.steampowered.com/app/1426210/" target="_blank" rel="noopener"><img class="rr-cover" src="https://cdn.cloudflare.steamstatic.com/steam/apps/1426210/header.jpg" alt="It Takes Two 的封面" loading="lazy"></a><div class="rr-body"><h3 class="rr-name"><a href="https://store.steampowered.com/app/1426210/" target="_blank" rel="noopener">It Takes Two</a></h3><p class="rr-desc">游玩《双人成行》，踏上生命中最疯狂的旅程。利用好友通行证*邀请一位好友免费游玩，共同体验多种多样的乐趣，享受颠覆性的玩法挑战。</p></div></li><li class="rr-item"><a class="rr-art" href="https://store.steampowered.com/app/1328670/" target="_blank" rel="noopener"><img class="rr-cover" src="https://cdn.cloudflare.steamstatic.com/steam/apps/1328670/header.jpg" alt="Mass Effect™ Legendary Edition 的封面" loading="lazy"></a><div class="rr-body"><h3 class="rr-name"><a href="https://store.steampowered.com/app/1328670/" target="_blank" rel="noopener">Mass Effect™ Legendary Edition</a></h3><p class="rr-desc">《质量效应》传奇版将包含单人基础内容及广受赞誉的《质量效应》《质量效应 2》及《质量效应 3》三部曲系列超过 40 款 DLC，更有多种促销武器、装甲，及各种组合包等你来拿--所有内容，全部重置优化新升级，4K Ultra HD，等你体验。</p></div></li><li class="rr-item"><a class="rr-art" href="https://store.steampowered.com/app/1091500/" target="_blank" rel="noopener"><img class="rr-cover" src="https://cdn.cloudflare.steamstatic.com/steam/apps/1091500/header.jpg" alt="Cyberpunk 2077 的封面" loading="lazy"></a><div class="rr-body"><h3 class="rr-name"><a href="https://store.steampowered.com/app/1091500/" target="_blank" rel="noopener">Cyberpunk 2077</a></h3><p class="rr-desc">《赛博朋克 2077》是一款开放世界动作冒险 RPG 游戏。故事发生在暗黑未来的夜之城，一座五光十色、危机四伏的超级大都会，权力更迭和无尽的身体改造是这里不变的主题。</p></div></li><li class="rr-item"><a class="rr-art" href="https://store.steampowered.com/app/1222140/" target="_blank" rel="noopener"><img class="rr-cover" src="https://cdn.cloudflare.steamstatic.com/steam/apps/1222140/header.jpg" alt="Detroit: Become Human 的封面" loading="lazy"></a><div class="rr-body"><h3 class="rr-name"><a href="https://store.steampowered.com/app/1222140/" target="_blank" rel="noopener">Detroit: Become Human</a></h3><p class="rr-desc">在《底特律：化身为人》中，人类和机器人的命运都将掌握在您的手中，您将走进一个不远的未来，一个机器人具有比人类更高智慧的时代。您将体验到史上最为复杂的分支故事--您所作出的每个选择都将影响游戏的结局。</p></div></li><li class="rr-item"><a class="rr-art" href="https://store.steampowered.com/app/1467920/" target="_blank" rel="noopener"><img class="rr-cover" src="https://cdn.cloudflare.steamstatic.com/steam/apps/1467920/header.jpg" alt="A Guidebook Of Babel 的封面" loading="lazy"></a><div class="rr-body"><h3 class="rr-name"><a href="https://store.steampowered.com/app/1467920/" target="_blank" rel="noopener">A Guidebook Of Babel</a></h3><p class="rr-desc">一款以蝴蝶效应为核心的剧情冒险游戏。你将登上名为巴别号的奇幻巨轮，经历一段光怪陆离的转世之旅……旅人的心愿与遗憾在此交织，而你，准备好拿起钢笔，去改写他们经历的一切了吗？</p></div></li><li class="rr-item"><a class="rr-art" href="https://store.steampowered.com/app/1147550/" target="_blank" rel="noopener"><img class="rr-cover" src="https://cdn.cloudflare.steamstatic.com/steam/apps/1147550/header.jpg" alt="Not For Broadcast 的封面" loading="lazy"></a><div class="rr-body"><h3 class="rr-name"><a href="https://store.steampowered.com/app/1147550/" target="_blank" rel="noopener">Not For Broadcast</a></h3><p class="rr-desc">今天是选举之夜！一个新政党以压倒性优势获胜，但《全国晚间新闻》的编辑却逃之夭夭，所以由你这位看门人来控制广播室。你会支持新政府走向反乌托邦吗？还是会不惜一切代价阻止他们？</p></div></li><li class="rr-item"><a class="rr-art" href="https://store.steampowered.com/app/1222690/" target="_blank" rel="noopener"><img class="rr-cover" src="https://cdn.cloudflare.steamstatic.com/steam/apps/1222690/header.jpg" alt="Dragon Age™ Inquisition 的封面" loading="lazy"></a><div class="rr-body"><h3 class="rr-name"><a href="https://store.steampowered.com/app/1222690/" target="_blank" rel="noopener">Dragon Age™ Inquisition</a></h3><p class="rr-desc">为拯救 Thedas 而战。此时此刻，每个选择都至关重要。创建您的英雄，选择他们的技能，组建一支队伍，铲除世间邪恶。</p></div></li><li class="rr-item"><a class="rr-art" href="https://store.steampowered.com/app/1462570/" target="_blank" rel="noopener"><img class="rr-cover" src="https://cdn.cloudflare.steamstatic.com/steam/apps/1462570/header.jpg" alt="Lost in Random™ 的封面" loading="lazy"></a><div class="rr-body"><h3 class="rr-name"><a href="https://store.steampowered.com/app/1462570/" target="_blank" rel="noopener">Lost in Random™</a></h3><p class="rr-desc">在《Lost in Random™》中让幸运女神垂青于你，这是一款哥特童话风格的动作冒险游戏，这个王国中每个公民的命运都由掷骰决定。</p></div></li><li class="rr-item"><a class="rr-art" href="https://store.steampowered.com/app/1225580/" target="_blank" rel="noopener"><img class="rr-cover" src="https://cdn.cloudflare.steamstatic.com/steam/apps/1225580/header.jpg" alt="Fe 的封面" loading="lazy"></a><div class="rr-body"><h3 class="rr-name"><a href="https://store.steampowered.com/app/1225580/" target="_blank" rel="noopener">Fe</a></h3><p class="rr-desc">在一座幽暗的北欧风格森林中四处奔跑、攀爬乃至滑翔，探索那里生机盎然、藏满各种秘密和神奇生物的生态系统。 化身为“Fe”，探索一片令您流连忘返的新天地。</p></div></li></ol>
+</section>
   <section id="today-play" aria-labelledby="today-play-title">
 <style>
 #today-play {
