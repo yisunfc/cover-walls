@@ -1,1 +1,194 @@
-<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=games.html"><link rel="canonical" href="games.html"/></head><body><a href="games.html">Redirecting...</a></body></html>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cover Walls — 页面目录</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f5f5f7;
+      --card: #ffffff;
+      --fg: #1d1d1f;
+      --muted: #55565b;
+      --accent: #2f6feb;
+      --border: #d9d9de;
+      --badge-bg: #ffe8b3;
+      --badge-fg: #6b4d00;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #16171a;
+        --card: #232428;
+        --fg: #f2f2f4;
+        --muted: #a9aab1;
+        --accent: #7aa2f7;
+        --border: #34353a;
+        --badge-bg: #4a3a12;
+        --badge-fg: #ffdf9e;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: system-ui, -apple-system, "Segoe UI", "PingFang SC",
+        "Microsoft YaHei", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+    }
+    main {
+      max-width: 60rem;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 3rem;
+    }
+    h1 {
+      font-size: 1.75rem;
+      margin: 0 0 0.25rem;
+    }
+    .intro {
+      color: var(--muted);
+      margin: 0 0 1.75rem;
+    }
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 40rem) {
+      nav ul { grid-template-columns: repeat(2, 1fr); }
+    }
+    a.card {
+      display: block;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    a.card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    a.card:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .card-desc {
+      margin: 0.35rem 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      padding: 0.1rem 0.5rem;
+      border-radius: 999px;
+      background: var(--badge-bg);
+      color: var(--badge-fg);
+    }
+    footer {
+      max-width: 60rem;
+      margin: 0 auto;
+      padding: 0 1.25rem 2rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      a.card { transition: none; }
+      a.card:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Cover Walls</h1>
+    <p class="intro">个人游戏与观影记录的公开页面目录。</p>
+    <nav aria-label="公开页面">
+      <ul>
+        <li>
+          <a class="card" href="games.html">
+            <span class="card-title">Game Collection</span>
+            <p class="card-desc">个人游戏收藏封面墙</p>
+          </a>
+        </li>
+        <li>
+          <a class="card" href="movies.html">
+            <span class="card-title">My Movies</span>
+            <p class="card-desc">个人观影记录封面墙</p>
+          </a>
+        </li>
+        <li>
+          <a class="card" href="gamelib.html">
+            <span class="card-title">游戏库</span>
+            <p class="card-desc">Steam 游戏库总览</p>
+          </a>
+        </li>
+        <li>
+          <a class="card" href="epic.html">
+            <span class="card-title">Epic Games Library</span>
+            <p class="card-desc">Epic 游戏库总览</p>
+          </a>
+        </li>
+        <li>
+          <a class="card" href="steam.html">
+            <span class="card-title">游戏消费</span>
+            <p class="card-desc">Steam 购买与消费统计</p>
+          </a>
+        </li>
+        <li>
+          <a class="card" href="recommendations.html">
+            <span class="card-title">游戏推荐</span>
+            <p class="card-desc">基于评价与口味的游戏推荐</p>
+          </a>
+        </li>
+        <li>
+          <a class="card" href="today.html">
+            <span class="card-title">今天玩什么</span>
+            <p class="card-desc">随机挑选今天可以玩的游戏</p>
+          </a>
+        </li>
+        <li>
+          <a class="card" href="games-profile-v2-preview.html">
+            <span class="card-title">Game Collection — Asset Profile<span class="badge">预览</span> <span class="visually-hidden">（预览）</span></span>
+            <p class="card-desc">游戏收藏资产画像（预览）</p>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </main>
+  <footer>
+    <p>这些页面由 PersonalRecordDB 生成并发布。</p>
+  </footer>
+</body>
+</html>
