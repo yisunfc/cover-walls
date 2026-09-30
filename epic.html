@@ -47,6 +47,7 @@ section.content{flex:1;padding:14px 20px;min-width:0;}
 .badge.family{background:#8a5cf6cc;}
 .badge.played{background:#2f855acc;}
 .badge.nohltb{background:#a05a2ccc;}
+.badge.rating{background:rgba(27,111,184,0.85);font-weight:600;color:#fff;}
 table.tbl{width:100%;border-collapse:collapse;font-size:13px;}
 table.tbl th,table.tbl td{padding:6px 8px;border-bottom:1px solid #253247;text-align:left;}
 table.tbl th{color:var(--muted);cursor:pointer;user-select:none;font-weight:500;}
@@ -72,7 +73,7 @@ table.tbl a{color:var(--accent);text-decoration:none;}
     <h1>Epic Games Library</h1>
     <div class="stats" id="stats">466 games · 466 Epic · 466 owned · 0 family · 0 with HLTB · 0 已玩</div>
   </div>
-  <div class="search"><input id="q" type="search" placeholder="搜索名称 / name…" autocomplete="off"></div>
+  <div class="search"><input id="q" type="search" placeholder="搜索名称、ID / name, id…" autocomplete="off"></div>
 </header>
 <main>
 <aside>
@@ -108,9 +109,10 @@ table.tbl a{color:var(--accent);text-decoration:none;}
   </div>
   <h3>类别 (Genre)</h3>
   <div class="filter-group" data-group="genres" id="genres"></div>
+  <div class="more-toggle" id="more-genres" style="margin-bottom:12px;">展开更多类别 ▾</div>
   <h3>标签 (Tag)</h3>
-  <div class="filter-group" data-group="tags" id="tags"></div>
-  <div class="more-toggle" id="more-tags">展开更多标签 ▾</div>
+  <div class="filter-group hidden" data-group="tags" id="tags"></div>
+  <div class="more-toggle" id="more-tags">展开标签筛选 ▾</div>
   <button class="reset" id="reset">重置筛选</button>
 </aside>
 <section class="content">
@@ -154,13 +156,20 @@ window.PLAYED_KNOWN = true;
   const genres = tally('genres');
   const tags = tally('tags');
   const gEl = document.getElementById('genres');
-  genres.forEach(([g,n])=>{gEl.insertAdjacentHTML('beforeend',`<label><input type="checkbox" value="${escape(g)}">${escape(g)} <span style="color:var(--muted)">(${n})</span></label>`);});
+  const TOP_G = 8;
+  genres.forEach(([g,n],i)=>{gEl.insertAdjacentHTML('beforeend',`<label class="${i<TOP_G?'':'more hidden'}"><input type="checkbox" value="${escape(g)}">${escape(g)} <span style="color:var(--muted)">(${n})</span></label>`);});
+  const moreG = document.getElementById('more-genres');
+  if(genres.length<=TOP_G){moreG.classList.add('hidden');}
+  moreG.addEventListener('click',()=>{gEl.querySelectorAll('label.more').forEach(l=>l.classList.toggle('hidden'));moreG.textContent = moreG.textContent.includes('展开')?'收起 ▴':'展开更多类别 ▾';});
+
   const tEl = document.getElementById('tags');
-  const TOP = 15;
-  tags.forEach(([t,n],i)=>{tEl.insertAdjacentHTML('beforeend',`<label class="${i<TOP?'':'more hidden'}"><input type="checkbox" value="${escape(t)}">${escape(t)} <span style="color:var(--muted)">(${n})</span></label>`);});
+  tags.forEach(([t,n])=>{tEl.insertAdjacentHTML('beforeend',`<label><input type="checkbox" value="${escape(t)}">${escape(t)} <span style="color:var(--muted)">(${n})</span></label>`);});
   const moreBtn = document.getElementById('more-tags');
-  if(tags.length<=TOP){moreBtn.classList.add('hidden');}
-  moreBtn.addEventListener('click',()=>{tEl.querySelectorAll('label.more').forEach(l=>l.classList.toggle('hidden'));moreBtn.textContent = moreBtn.textContent.includes('展开')?'收起 ▴':'展开更多标签 ▾';});
+  if(tags.length===0){moreBtn.classList.add('hidden');}
+  moreBtn.addEventListener('click',()=>{
+    tEl.classList.toggle('hidden');
+    moreBtn.textContent = tEl.classList.contains('hidden')?'展开标签筛选 ▾':'收起标签筛选 ▴';
+  });
 
   function escape(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   function hh(mins){return mins==null?null:Math.round(mins/60);}
@@ -206,7 +215,10 @@ window.PLAYED_KNOWN = true;
           if(h==='gt60' && !(hr>=60)) return false;}}
       if(gs.length && !gs.every(x=>g.genres.includes(x))) return false;
       if(ts.length && !ts.every(x=>g.tags.includes(x))) return false;
-      if(q){const n=(g.name||'').toLowerCase(),ne=(g.name_en||'').toLowerCase();if(!n.includes(q)&&!ne.includes(q))return false;}
+      if(q){
+        const n=(g.name||'').toLowerCase(), ne=(g.name_en||'').toLowerCase(), id=(g.appid||'').toLowerCase();
+        if(!n.includes(q) && !ne.includes(q) && !id.includes(q)) return false;
+      }
       return true;
     });
   }
@@ -230,12 +242,11 @@ window.PLAYED_KNOWN = true;
     const h=hh(g.hltb_main);
     const cover = vertical?g.cover_vertical:g.cover_horizontal;
     const badges=[];
+    if(g.ratings && g.ratings.IGDB) badges.push(`<span class="badge rating">★ ${escape(g.ratings.IGDB)}</span>`);
     if(g.source==='family') badges.push('<span class="badge family">家庭</span>');
     if(g.played) badges.push('<span class="badge played">已玩</span>');
     if(g.hltb_main==null) badges.push('<span class="badge nohltb">无 HLTB</span>');
     const sub=[];
-    const igdbR = (g.ratings && g.ratings.IGDB) ? `★ ${g.ratings.IGDB}` : null;
-    if(igdbR) sub.push(igdbR);
     if(h!=null) sub.push(`~${h}h`);
     if(g.year) sub.push(g.year);
     if(g.genres.length) sub.push(escape(g.genres.slice(0,2).join(', ')));
@@ -250,8 +261,11 @@ window.PLAYED_KNOWN = true;
     </div>`;
   }
   function tableHtml(list){
-    const rows=list.map(g=>`<tr data-id="${g.appid}"><td>${escape(g.name)}</td><td>${g.year||''}</td><td>${hh(g.hltb_main)??''}</td><td>${Math.round((g.playtime_minutes||0)/60)}</td><td>${g.platform==='epic'?'Epic':'Steam'}</td><td>${g.source==='family'?'家庭':'我的'}</td><td>${g.played?'✓':(g.played===false?'':'—')}</td><td><a href="${g.store_url}" target="_blank" rel="noopener">${g.platform==='epic'?'Epic':'Steam'}</a></td></tr>`).join('');
-    return `<table class="tbl"><thead><tr><th>名称</th><th>年</th><th>HLTB(h)</th><th>已玩(h)</th><th>平台</th><th>来源</th><th>Notion</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+    const rows=list.map(g=>{
+      const rStr = (g.ratings && g.ratings.IGDB) ? escape(g.ratings.IGDB) : '—';
+      return `<tr data-id="${g.appid}"><td>${escape(g.name)}</td><td>${rStr}</td><td>${escape(g.appid)}</td><td>${g.year||''}</td><td>${hh(g.hltb_main)??''}</td><td>${Math.round((g.playtime_minutes||0)/60)}</td><td>${g.platform==='epic'?'Epic':'Steam'}</td><td>${g.source==='family'?'家庭':'我的'}</td><td>${g.played?'✓':(g.played===false?'':'—')}</td><td><a href="${g.store_url}" target="_blank" rel="noopener">${g.platform==='epic'?'Epic':'Steam'}</a></td></tr>`;
+    }).join('');
+    return `<table class="tbl"><thead><tr><th>名称</th><th>评分</th><th>External ID</th><th>年</th><th>HLTB(h)</th><th>已玩(h)</th><th>平台</th><th>来源</th><th>Notion</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
   }
   const PAGE=60;
   let currentList=[],renderedCount=0,io=null;
@@ -313,7 +327,8 @@ window.PLAYED_KNOWN = true;
       <img src="${g.cover_horizontal}" loading="lazy" decoding="async" alt="">
       <dl class="kv">
         <dt>来源</dt><dd>${g.source==='family'?'家庭共享':'我的'}</dd>
-        <dt>评分</dt><dd>${(g.ratings&&Object.keys(g.ratings).length)?Object.entries(g.ratings).map(([k,v])=>`${escape(k)}: ${escape(v)}`).join(' | '):'—'}</dd>
+        <dt>评分</dt><dd>${(g.ratings&&Object.keys(g.ratings).length)?Object.entries(g.ratings).map(([k,v])=>`<span style="color:var(--accent);font-weight:600;">★ ${escape(k)}: ${escape(v)}</span>`).join(' | '):'暂无评分'}</dd>
+        <dt>External ID</dt><dd><code>${escape(g.appid)}</code></dd>
         <dt>发售年</dt><dd>${g.year||'—'}</dd>
         <dt>已玩</dt><dd>${Math.round((g.playtime_minutes||0)/60)} h (${g.playtime_minutes||0} min)</dd>
         <dt>HLTB Rushed</dt><dd>${he??'—'} h</dd>
