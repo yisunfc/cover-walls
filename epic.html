@@ -326,7 +326,6 @@ window.PLAYED_KNOWN = true;
     if(dispRating) badges.push(`<span class="badge rating">${dispRating.text}</span>`);
     if(g.source==='family') badges.push('<span class="badge family">家庭</span>');
     if(g.played) badges.push('<span class="badge played">已玩</span>');
-    if(g.hltb_main==null) badges.push('<span class="badge nohltb">无 HLTB</span>');
     const sub=[];
     if(h!=null) sub.push(`~${h}h`);
     if(g.year) sub.push(g.year);
