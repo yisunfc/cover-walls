@@ -147,10 +147,10 @@ table.tbl a{color:var(--accent);text-decoration:none;}
     <div class="sort-wrap">
       <label for="sort" style="color:var(--muted);font-size:13px;">排序</label>
       <select id="sort">
-        <option value="name">名称</option>
         <option value="rating">评分 (口碑/媒体)</option>
         <option value="popularity">热度 (评测人数)</option>
         <option value="acquired">获取时间 (最新)</option>
+        <option value="name">名称</option>
         <option value="hltb">HLTB 时长</option>
         <option value="playtime">已玩时长</option>
         <option value="year">发售年</option>
@@ -272,13 +272,16 @@ window.PLAYED_KNOWN = true;
   function getDisplayRating(g){
     if(!g.ratings) return null;
     if(g.ratings.Steam){
-      return {text: `👍 ${escape(g.ratings.Steam)}`, val: parseInt(String(g.ratings.Steam).match(/(\\d+)/)?.[1]||'0', 10)};
+      const m = String(g.ratings.Steam).match(/(\d+)/);
+      return {text: `👍 ${escape(g.ratings.Steam)}`, val: m ? parseInt(m[1], 10) : 0};
     }
     if(g.ratings.Metacritic){
-      return {text: `★ MC: ${escape(g.ratings.Metacritic)}`, val: parseInt(String(g.ratings.Metacritic).match(/(\\d+)/)?.[1]||'0', 10)};
+      const m = String(g.ratings.Metacritic).match(/(\d+)/);
+      return {text: `★ MC: ${escape(g.ratings.Metacritic)}`, val: m ? parseInt(m[1], 10) : 0};
     }
     if(g.ratings.IGDB){
-      return {text: `★ IGDB: ${escape(g.ratings.IGDB)}`, val: parseInt(String(g.ratings.IGDB).match(/(\\d+)/)?.[1]||'0', 10)};
+      const m = String(g.ratings.IGDB).match(/(\d+)/);
+      return {text: `★ IGDB: ${escape(g.ratings.IGDB)}`, val: m ? parseInt(m[1], 10) : 0};
     }
     return null;
   }
@@ -299,7 +302,12 @@ window.PLAYED_KNOWN = true;
         return isDesc ? -res : res;
       }
       let diff = 0;
-      if(s==='rating') diff = getRating(b) - getRating(a);
+      if(s==='rating'){
+        diff = getRating(b) - getRating(a);
+        if(diff === 0){
+          diff = (b.reviews_total||0) - (a.reviews_total||0);
+        }
+      }
       else if(s==='popularity') diff = (b.reviews_total||0) - (a.reviews_total||0);
       else if(s==='acquired') diff = (b.acquired_at||0) - (a.acquired_at||0);
       else if(s==='hltb') diff = (b.hltb_main||-1) - (a.hltb_main||-1);
